@@ -17,6 +17,19 @@ const router = Router();
  *     description: Retrieve a list of users from the database.
  *     tags:
  *       - Users
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Number of page for the data
+ *       - name: rows
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Number of rows to retrieve
  *
  *     responses:
  *       200:
@@ -28,7 +41,10 @@ const router = Router();
  *              $ref: '#/components/schemas/User'
  *
  */
-router.get(ROUTES.USER, async (req: Request, res: Response) => {});
+router.get(ROUTES.USER, async (req: Request, res: Response) => {
+  const { page = 0, rows = 20 } = req.query;
+  res.status(200).send("Working on this");
+});
 
 /**
  * @swagger
