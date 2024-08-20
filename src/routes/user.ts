@@ -1,9 +1,9 @@
 import { Router, Request, Response } from "express";
 import { ROUTES } from "./routes";
-import { createUser } from "../services/user.service";
+import { createUser, findUserById, findUsers, login, updateUser } from "../services/user.service";
 import { ApiResponse } from "../types/ApiResponse";
 import { User } from "../types/user";
-import { UserValidator } from "../functions/validators";
+import { CompanyPatchValidator, LoginValidator, UserValidator } from "../functions/validators";
 import { validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 
@@ -42,9 +42,53 @@ const router = Router();
  *
  */
 router.get(ROUTES.USER, async (req: Request, res: Response) => {
-  const { page = 0, rows = 20 } = req.query;
-  res.status(200).send("Working on this");
+  const filter = req.query || {};
+  let response: ApiResponse<User[]>;
+  try {
+    const found = (await findUsers(filter)) as unknown as User[];
+    response = {
+      success: true,
+      data: found,
+    };
+    res.status(200).send(response);
+  } catch (error: any) {
+    response = {
+      success: false,
+      message: error,
+    };
+    res.status(500).send(response);
+  }
 });
+
+router.patch(
+    ROUTES.USER,
+    CompanyPatchValidator,
+    async (req: Request, res: Response) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      } else {
+        let response: ApiResponse<User>;
+        const { id, data } = req.body;
+        try {
+          const foundUser: any = await findUserById(id);
+          const modifiedUser = { ...foundUser?._doc, ...data };
+          const replaced: any = await updateUser(id, modifiedUser);
+          response = {
+            success: true,
+            data: replaced,
+          };
+          res.status(200).send(response);
+        } catch (error: any) {
+          response = {
+            success: false,
+            message: error,
+          };
+          res.status(500).send(response);
+        }
+      }
+    }
+  );
 
 /**
  * @swagger
@@ -84,7 +128,7 @@ router.post(ROUTES.USER, UserValidator, async (req: Request, res: Response) => {
       bcrypt.genSaltSync()
     );
     reqUser.password = hashedPassword;
-    const newUser = await createUser(reqUser);
+    const newUser = (await createUser(reqUser)) as unknown as User;
     response = {
       success: true,
       message: "User created",
@@ -99,5 +143,35 @@ router.post(ROUTES.USER, UserValidator, async (req: Request, res: Response) => {
     res.status(500).send(response);
   }
 });
+
+router.get(
+  `${ROUTES.USER}${ROUTES.LOGIN}`,
+  LoginValidator,
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    let response: ApiResponse<any>;
+    try {
+      const { userName, password } = req.query as {
+        userName: string;
+        password: string;
+      };
+      const loginData = await login(userName, password);
+      response = {
+        success: true,
+        data: loginData,
+      };
+      res.status(200).send(response);
+    } catch (error: any) {
+      response = {
+        success: false,
+        message: error.message,
+      };
+      res.status(400).send(response);
+    }
+  }
+);
 
 export default router;

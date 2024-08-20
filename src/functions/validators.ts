@@ -5,9 +5,12 @@ export const UserValidator = validator([
   "userName",
   "password",
   "company",
+  "isAdmin",
 ]);
 export const CompanyValidator = validator(["name"]);
 export const CompanyPatchValidator = validator(["id", "data"]);
+export const TaskValidator = validator(["companyId", "description"]);
+export const LoginValidator = validator(["userName", "password"]);
 
 function validator(requiredValues: string[]) {
   return requiredValues.map((requiredValue: string) =>
