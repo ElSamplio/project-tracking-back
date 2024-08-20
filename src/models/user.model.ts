@@ -30,6 +30,8 @@ const userSchema = new Schema({
   password: String,
   firstName: String,
   lastName: String,
+  company: mongoose.Types.ObjectId,
+  isAdmin: Boolean,
 });
 
 const UserModel = mongoose.model("User", userSchema);
