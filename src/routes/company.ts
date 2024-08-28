@@ -46,7 +46,7 @@ router.get(`${ROUTES.COMPANY}/:id`, async (req: Request, res: Response) => {
   const { id } = req.params;
   let response: ApiResponse<Company>;
   try {
-    const company = (await findCompanyById(id)) as Company;
+    const company = (await findCompanyById(id)) as unknown as Company;
     response = {
       success: true,
       data: company,
@@ -65,7 +65,7 @@ router.get(ROUTES.COMPANY, async (req: Request, res: Response) => {
   const filter = req.query || {};
   let response: ApiResponse<Company[]>;
   try {
-    const found = (await findCompanies(filter)) as Company[];
+    const found = (await findCompanies(filter)) as unknown as Company[];
     response = {
       success: true,
       data: found,

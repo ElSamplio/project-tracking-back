@@ -3,7 +3,7 @@ import { Company } from "../types/company";
 
 export const createCompany = async (company: Company): Promise<Company> => {
   try {
-    const createdCompany = (await CompanyModel.create(company)) as Company;
+    const createdCompany = (await CompanyModel.create(company)) as unknown as Company;
     return createdCompany;
   } catch (error) {
     throw error;
