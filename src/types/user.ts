@@ -4,4 +4,5 @@ export type User = {
   userName: string,
   password: string,
   company: string,
+  isAdmin: true,
 };

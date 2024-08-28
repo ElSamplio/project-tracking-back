@@ -1,4 +1,5 @@
 export type Image = {
     sid: string,
-    url: string
+    url: string,
+    uploadedBy: string
 }
