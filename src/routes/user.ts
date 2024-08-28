@@ -169,7 +169,7 @@ router.get(
         success: false,
         message: error.message,
       };
-      res.status(400).send(response);
+      res.status(401).send(response);
     }
   }
 );
