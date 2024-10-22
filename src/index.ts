@@ -4,6 +4,7 @@ import exampleRouter from "./routes/example";
 import userRouter from "./routes/user";
 import companyRouter from "./routes/company";
 import taskRouter from "./routes/task";
+import paramRouter from "./routes/param";
 import dotenv from "dotenv";
 import { setupSwagger } from "./swagger";
 import { ROUTES } from "./routes/routes";
@@ -26,6 +27,7 @@ app.use(BASE, exampleRouter);
 app.use(BASE, userRouter);
 app.use(BASE, companyRouter);
 app.use(BASE, taskRouter);
+app.use(BASE, paramRouter);
 
 setupSwagger(app);
 
