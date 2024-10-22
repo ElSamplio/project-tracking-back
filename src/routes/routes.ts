@@ -4,5 +4,6 @@ export const ROUTES = {
   USER: "/user",
   COMPANY: "/company",
   TASK: "/task",
+  PARAM: "/param",
   LOGIN: "/login",
 };
